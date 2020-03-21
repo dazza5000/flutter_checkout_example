@@ -1,3 +1,4 @@
+import 'package:checkoutexample/shopping_cart/shopping_cart_view.dart';
 import 'package:flutter/material.dart';
 
 class CheckoutView extends StatefulWidget {
@@ -14,22 +15,27 @@ class _CheckoutViewState extends State<CheckoutView> {
         appBar: AppBar(title: Text("Secure Checkout")),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              getNameWidget(),
               Container(
-                height: 16.0,
+                width: 600,
+                child: Column(
+                  children: <Widget>[
+                    getNameWidget(),
+                    Container(
+                      height: 16.0,
+                    ),
+                    getAddressWidget(),
+                    Container(
+                      height: 16.0,
+                    ),
+                    getCreditCardWidget(),
+                  ],
+                ),
               ),
-              getAddressWidget(),
-              Container(
-                height: 16.0,
-              ),
-              getCreditCardWidget(),
-              Container(
-                height: 16.0,
-              ),
-              getPlaceYourOrderWidget(),
+              ShoppingCartView()
             ],
           ),
         ));
@@ -177,15 +183,5 @@ class _CheckoutViewState extends State<CheckoutView> {
             ],
           )
         ]);
-  }
-
-  Widget getPlaceYourOrderWidget() {
-    return Container(
-      width: 500,
-      child: RaisedButton(
-        child: Text("Place your order"),
-        onPressed: () {},
-      ),
-    );
   }
 }
