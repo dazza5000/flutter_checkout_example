@@ -109,7 +109,6 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
                 ],
               ),
               Container(height: 8.0,),
-
               Text("Order Summary", style: Theme.of(context).textTheme.headline6),
               Divider(),
               Row(
