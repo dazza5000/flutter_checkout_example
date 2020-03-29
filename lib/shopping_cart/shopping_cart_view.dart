@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:checkoutexample/data/CheckoutRepository.dart';
 import 'package:checkoutexample/model/Address.dart';
 import 'package:checkoutexample/model/Customer.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:checkoutexample/checkout/checkout_view.dart';
@@ -16,7 +15,9 @@ import 'package:intl/intl.dart';
 const double unitPrice = 7.77;
 
 class ShoppingCartView extends StatefulWidget {
-  ShoppingCartView();
+  final Customer customer;
+
+  ShoppingCartView(this.customer);
 
   @override
   _ShoppingCartViewState createState() => _ShoppingCartViewState();
@@ -24,11 +25,8 @@ class ShoppingCartView extends StatefulWidget {
 
 class _ShoppingCartViewState extends State<ShoppingCartView> {
   int quantity = 1;
-  static const _host = 'api.stripe.com';
-  static const _version = '2019-05-16';
-  final HttpsCallable callable = CloudFunctions.instance
-      .getHttpsCallable(functionName: 'createCustomer')
-    ..timeout = const Duration(seconds: 30);
+
+  _ShoppingCartViewState();
 
   @override
   void initState() {
@@ -167,24 +165,21 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
                 ],
               ),
               Container(height: 8.0,),
-              Center(child: getPlaceYourOrderWidget())
+              Center(child: getPlaceYourOrderWidget(widget.customer))
             ]),
       ),
     );
   }
 
-  Widget getPlaceYourOrderWidget() {
+  Widget getPlaceYourOrderWidget(Customer customer) {
     return Container(
       width: 500,
       child: RaisedButton(
         child: Text("Place your order"),
         onPressed: () async {
-          Address address = Address("home", "", "", "");
-          Customer customer = Customer("darran.kelinske@gmail.com", "Android Engineer", "Darran Kelinske", "5126937499", address);
           print(customer.toJson());
           CheckoutRepository().createCustomer(customer).then((value) {
             print("the data from the callable is: $value");
-
           });
         },
       ),
@@ -194,4 +189,5 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
   String getTotal() {
     return NumberFormat.simpleCurrency().format(quantity * unitPrice);
   }
+
 }
