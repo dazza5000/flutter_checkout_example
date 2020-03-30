@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:checkoutexample/data/CheckoutRepository.dart';
+import 'package:checkoutexample/data/CustomerRepository.dart';
 import 'package:checkoutexample/model/Address.dart';
 import 'package:checkoutexample/model/Customer.dart';
 import 'package:http/http.dart' as http;
@@ -15,7 +16,7 @@ import 'package:intl/intl.dart';
 const double unitPrice = 7.77;
 
 class ShoppingCartView extends StatefulWidget {
-  final Customer customer;
+  final CustomerRepository customer;
 
   ShoppingCartView(this.customer);
 
@@ -165,20 +166,20 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
                 ],
               ),
               Container(height: 8.0,),
-              Center(child: getPlaceYourOrderWidget(widget.customer))
+              Center(child: getPlaceYourOrderWidget())
             ]),
       ),
     );
   }
 
-  Widget getPlaceYourOrderWidget(Customer customer) {
+  Widget getPlaceYourOrderWidget() {
     return Container(
       width: 500,
       child: RaisedButton(
         child: Text("Place your order"),
         onPressed: () async {
-          print(customer.toJson());
-          CheckoutRepository().createCustomer(customer).then((value) {
+          print(widget.customer.getCustomer().toJson());
+          CheckoutRepository().createCustomer(widget.customer.getCustomer()).then((value) {
             print("the data from the callable is: $value");
           });
         },
