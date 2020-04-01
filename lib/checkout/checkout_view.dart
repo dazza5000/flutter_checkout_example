@@ -1,13 +1,21 @@
 import 'dart:math';
 
+import 'package:checkoutexample/data/CardRepository.dart';
 import 'package:checkoutexample/data/CustomerRepository.dart';
 import 'package:checkoutexample/model/Address.dart';
+import 'package:checkoutexample/model/CreditCard.dart';
 import 'package:checkoutexample/model/Customer.dart';
 import 'package:checkoutexample/shopping_cart/shopping_cart_view.dart';
 import 'package:flutter/material.dart';
 
 final String firstName = "First name";
 final String lastName = "Last name";
+final addressLine1 = "Address Line 1";
+final city = "City";
+final zipCode = "Zip Code";
+final creditCardNumber = "Card Number";
+final expirationDate = "MMYY";
+final securityCode = "Security Code";
 
 class CheckoutView extends StatefulWidget {
   CheckoutView();
@@ -17,6 +25,7 @@ class CheckoutView extends StatefulWidget {
 }
 
 class _CheckoutViewState extends State<CheckoutView> {
+
   final _formKey = GlobalKey<FormState>();
 
   var firstNameController = TextEditingController();
@@ -29,9 +38,10 @@ class _CheckoutViewState extends State<CheckoutView> {
   var zipController = TextEditingController();
   var cardNumberController = TextEditingController();
   var expirationController = TextEditingController();
-  final TextEditingController securityCodeController = TextEditingController();
+  TextEditingController securityCodeController = TextEditingController();
 
   CustomerRepository customerRepository = CustomerRepository();
+  CardRepository cardRepository = CardRepository();
 
   @override
   void initState() {
@@ -46,12 +56,16 @@ class _CheckoutViewState extends State<CheckoutView> {
           cityController.text,
           stateController.text);
       Customer customer = Customer(
-          "darran.kelinske@gmail.com",
+          "darran7777777@gmail.com",
+          companyController.text,
+          firstNameController.text + " " + lastNameController.text,
           "",
-          firstNameController.text + lastNameController.text,
-          "5126937499",
           address);
       customerRepository.saveCustomer(customer);
+
+      CreditCard card = CreditCard();
+
+      cardRepository.saveCard(card);
     });
   }
 
@@ -84,7 +98,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                   ),
                 ),
               ),
-              ShoppingCartView(customerRepository)
+              ShoppingCartView(customerRepository, cardRepository)
             ],
           ),
         ));
@@ -152,9 +166,7 @@ class _CheckoutViewState extends State<CheckoutView> {
   }
 
   Column getAddressWidget() {
-    final addressLine1 = "Address line 1";
-    final city = "City";
-    final zipCode = "ZIP Code";
+
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -196,6 +208,7 @@ class _CheckoutViewState extends State<CheckoutView> {
             ),
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
                 width: 300,
@@ -245,9 +258,6 @@ class _CheckoutViewState extends State<CheckoutView> {
   }
 
   Column getCreditCardWidget() {
-    final creditCardNumber = "Card number";
-    final expirationDate = "MM/YY";
-    final securityCode = "Security Code";
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -257,6 +267,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                 style: Theme.of(context).textTheme.headline6),
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
                 width: 250,
