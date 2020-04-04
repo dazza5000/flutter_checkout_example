@@ -22,7 +22,7 @@ class CheckoutView extends StatefulWidget {
   CheckoutView(this.emailProvider);
 
   @override
-  _CheckoutViewState createState() => _CheckoutViewState();
+  _CheckoutViewState createState() => _CheckoutViewState(emailProvider);
 }
 
 class _CheckoutViewState extends State<CheckoutView> {

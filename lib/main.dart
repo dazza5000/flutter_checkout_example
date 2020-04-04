@@ -1,11 +1,17 @@
+import 'dart:html';
+
 import 'package:checkout/checkout/checkout_view.dart';
 import 'package:flutter/material.dart';
+
+import 'data/EmailProvider.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  EmailProvider emailProvider = MockEmailProvider();
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -23,7 +29,15 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: CheckoutView(),
+      home: CheckoutView(emailProvider),
     );
+  }
+}
+
+class MockEmailProvider extends EmailProvider {
+
+  @override
+  String getEmail() {
+    return "darran7777777@gmail.com";
   }
 }
