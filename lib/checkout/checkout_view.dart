@@ -1,5 +1,6 @@
 import 'package:checkoutexample/data/CardRepository.dart';
 import 'package:checkoutexample/data/CustomerRepository.dart';
+import 'package:checkoutexample/data/EmailProvider.dart';
 import 'package:checkoutexample/model/Address.dart';
 import 'package:checkoutexample/model/CreditCard.dart';
 import 'package:checkoutexample/model/Customer.dart';
@@ -40,6 +41,7 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   CustomerRepository customerRepository = CustomerRepository();
   CardRepository cardRepository = CardRepository();
+  EmailProvider emailProvider = MockEmailProvider();
 
   @override
   void initState() {
@@ -55,7 +57,7 @@ class _CheckoutViewState extends State<CheckoutView> {
           cityController.text,
           stateController.text);
       Customer customer = Customer(
-          "darran7777777@gmail.com",
+          "",
           companyController.text,
           firstNameController.text + " " + lastNameController.text,
           "",
@@ -108,7 +110,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                   ),
                 ),
               ),
-              ShoppingCartView(customerRepository, cardRepository)
+              ShoppingCartView(customerRepository, cardRepository, emailProvider)
             ],
           ),
         ));
@@ -441,5 +443,13 @@ class MaskedTextController extends TextEditingController {
     }
 
     return result;
+  }
+}
+
+class MockEmailProvider extends EmailProvider {
+
+  @override
+  String getEmail() {
+    return "darran7777777@gmail.com";
   }
 }

@@ -20,6 +20,10 @@ class Customer {
     payment_method = paymentMethod;
   }
 
+  setEmail(String email) {
+    this.email = email;
+  }
+
   factory Customer.fromJson(Map<String, dynamic> json) => _$CustomerFromJson(json);
   Map<String, dynamic> toJson() => _$CustomerToJson(this);
 }

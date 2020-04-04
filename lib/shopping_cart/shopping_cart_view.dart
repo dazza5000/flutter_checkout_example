@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:checkoutexample/data/CardRepository.dart';
 import 'package:checkoutexample/data/CheckoutRepository.dart';
 import 'package:checkoutexample/data/CustomerRepository.dart';
+import 'package:checkoutexample/data/EmailProvider.dart';
 import 'package:checkoutexample/model/Customer.dart';
 import 'package:checkoutexample/model/Subscription.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,9 @@ const double unitPrice = 7.77;
 class ShoppingCartView extends StatefulWidget {
   final CustomerRepository customerRepository;
   final CardRepository cardRepository;
+  final EmailProvider emailProvider;
 
-  ShoppingCartView(this.customerRepository, this.cardRepository);
+  ShoppingCartView(this.customerRepository, this.cardRepository, this.emailProvider);
 
   @override
   _ShoppingCartViewState createState() => _ShoppingCartViewState();
@@ -179,7 +181,7 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
         onPressed: () async {
 
           if (CustomerRepository().getCustomer() == null || CardRepository().getCard() == null) {
-            _alertUser("Invalid payment details.");
+            _alertUser("", "Invalid payment details.");
             return;
           }
 
@@ -201,6 +203,7 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
           print("Payment method id is: $paymentMethodId");
 
           Customer customer = widget.customerRepository.getCustomer();
+          customer.setEmail(widget.emailProvider.getEmail());
           customer.setPaymentMethod(paymentMethodId);
 
           print(customer.toJson());
