@@ -9,14 +9,15 @@ import 'package:checkout/model/Subscription.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-const double unitPrice = 7.77;
+const double unitPrice = 30.00;
 
 class ShoppingCartView extends StatefulWidget {
   final CustomerRepository customerRepository;
   final CardRepository cardRepository;
   final EmailProvider emailProvider;
 
-  ShoppingCartView(this.customerRepository, this.cardRepository, this.emailProvider);
+  ShoppingCartView(
+      this.customerRepository, this.cardRepository, this.emailProvider);
 
   @override
   _ShoppingCartViewState createState() => _ShoppingCartViewState();
@@ -24,6 +25,7 @@ class ShoppingCartView extends StatefulWidget {
 
 class _ShoppingCartViewState extends State<ShoppingCartView> {
   int quantity = 1;
+  bool orderRequestInProgress = false;
 
   _ShoppingCartViewState();
 
@@ -66,13 +68,13 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Text("Pizza",
+                            Text("Real-Time Monitoring",
                                 style: Theme.of(context)
                                     .textTheme
                                     .subtitle1
                                     .apply(fontWeightDelta: 2)),
                             Image.network(
-                              "https://media.timeout.com/images/103315998/image.jpg",
+                              "https://www.info.lt/images/nuotraukos/2272659_3.jpg",
                               height: 100,
                               width: 100,
                             ),
@@ -177,15 +179,26 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
     return Container(
       width: 500,
       child: RaisedButton(
-        child: Text("Place your order"),
+        child: orderRequestInProgress
+            ? Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: CircularProgressIndicator(),
+            )
+            : Text("Place your order"),
         onPressed: () async {
+          print("place order was pressed");
 
-          if (CustomerRepository().getCustomer() == null || CardRepository().getCard() == null) {
+          if (orderRequestInProgress) {
+            return;
+          }
+
+          if (CustomerRepository().getCustomer() == null ||
+              CardRepository().getCard() == null) {
             _alertUser("", "Invalid payment details.");
             return;
           }
 
-          print("place order was pressed");
+          _setProgress(true);
 
           var response = await Checkout()
               .createPaymentMethod(widget.cardRepository.getCard());
@@ -197,7 +210,10 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
           if (response.statusCode == 200) {
             paymentMethodId = json.decode(response.body)['id'];
           } else {
-            _alertUser("", "Unable to create order. Please check payment details.");
+            _alertUser(
+                "", "Unable to create order. Please check payment details.");
+            _setProgress(false);
+            return;
           }
 
           print("Payment method id is: $paymentMethodId");
@@ -213,41 +229,51 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
           if (response.statusCode == 200) {
             customerId = json.decode(response.body)['id'];
           } else {
-            _alertUser("", "Unable to create order. Please check payment details.");
+            _alertUser(
+                "", "Unable to create order. Please check payment details.");
+            _setProgress(false);
+            return;
           }
 
           print("The customer id is: $customerId");
-
 
           response = await Checkout().createSubscription(customerId, quantity);
           var subscriptionId;
           if (response.statusCode == 200) {
             subscriptionId = json.decode(response.body)['id'];
           } else {
-            _alertUser("", "Unable to create order. Please check payment details.");
+            _alertUser(
+                "", "Unable to create order. Please check payment details.");
+            _setProgress(false);
+            return;
           }
 
           print("The subscription id is: $subscriptionId");
-          _alertUser("", "Order successful. Please check your e-mail for order confirmation");
-
-
-
+          _setProgress(false);
+          _alertUser("Success",
+              "Order successful. Please check your e-mail for order confirmation", goBack: true);
         },
       ),
     );
+  }
+
+  _setProgress(bool inProgress) {
+    setState(() {
+      orderRequestInProgress = inProgress;
+    });
   }
 
   String getTotal() {
     return NumberFormat.simpleCurrency().format(quantity * unitPrice);
   }
 
-  Future<void> _alertUser(String title, String alertText)async {
+  Future<void> _alertUser(String title, String alertText, {goBack = false}) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(title),
+          title: title.isNotEmpty ? Text(title) : null,
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
@@ -260,6 +286,9 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
               child: Text('OK'),
               onPressed: () {
                 Navigator.of(context).pop();
+                if (goBack) {
+                  Navigator.of(context).maybePop();
+                }
               },
             ),
           ],
