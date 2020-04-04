@@ -182,7 +182,11 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
         child: orderRequestInProgress
             ? Padding(
               padding: const EdgeInsets.all(1.0),
-              child: CircularProgressIndicator(),
+              child: SizedBox(
+                child: CircularProgressIndicator(),
+                height: 20.0,
+                width: 20.0,
+              ),
             )
             : Text("Place your order"),
         onPressed: () async {
