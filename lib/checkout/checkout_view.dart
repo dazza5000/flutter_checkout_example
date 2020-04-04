@@ -17,15 +17,17 @@ final expirationDate = "MMYY";
 final securityCode = "Security Code";
 
 class CheckoutView extends StatefulWidget {
-  CheckoutView();
+  EmailProvider emailProvider;
+
+  CheckoutView(this.emailProvider);
 
   @override
   _CheckoutViewState createState() => _CheckoutViewState();
 }
 
 class _CheckoutViewState extends State<CheckoutView> {
-
   final _formKey = GlobalKey<FormState>();
+  final EmailProvider emailProvider;
 
   var firstNameController = TextEditingController();
   var lastNameController = TextEditingController();
@@ -41,7 +43,8 @@ class _CheckoutViewState extends State<CheckoutView> {
 
   CustomerRepository customerRepository = CustomerRepository();
   CardRepository cardRepository = CardRepository();
-  EmailProvider emailProvider = MockEmailProvider();
+
+  _CheckoutViewState(this.emailProvider);
 
   @override
   void initState() {
@@ -443,13 +446,5 @@ class MaskedTextController extends TextEditingController {
     }
 
     return result;
-  }
-}
-
-class MockEmailProvider extends EmailProvider {
-
-  @override
-  String getEmail() {
-    return "darran7777777@gmail.com";
   }
 }
