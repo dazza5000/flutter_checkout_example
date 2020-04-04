@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:checkoutexample/data/CardRepository.dart';
 import 'package:checkoutexample/data/CheckoutRepository.dart';
 import 'package:checkoutexample/data/CustomerRepository.dart';
+import 'package:checkoutexample/model/Customer.dart';
+import 'package:checkoutexample/model/Subscription.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -91,8 +95,8 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
                                       setState(() {
                                         quantity--;
 
-                                        if (quantity < 0) {
-                                          quantity = 0;
+                                        if (quantity < 1) {
+                                          quantity = 1;
                                         }
                                       });
                                     }),
@@ -173,17 +177,58 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
       child: RaisedButton(
         child: Text("Place your order"),
         onPressed: () async {
-          print(widget.customerRepository.getCustomer().toJson());
-//          Checkout()
-//              .createCustomer(widget.customerRepository.getCustomer())
-//              .then((value) {
-//            print("the data from the callable is: $value");
-//          });
-          Checkout()
-              .createCard(widget.cardRepository.getCard())
-              .then((value) {
-            print("the data from the callable is: $value");
-          });
+
+          if (CustomerRepository().getCustomer() == null || CardRepository().getCard() == null) {
+            _alertUser("Invalid payment details.");
+            return;
+          }
+
+          print("place order was pressed");
+
+          var response = await Checkout()
+              .createPaymentMethod(widget.cardRepository.getCard());
+
+          String paymentMethodId;
+
+          // TODO: Abstract / Handle some of this on the repository / data layer
+
+          if (response.statusCode == 200) {
+            paymentMethodId = json.decode(response.body)['id'];
+          } else {
+            _alertUser("", "Unable to create order. Please check payment details.");
+          }
+
+          print("Payment method id is: $paymentMethodId");
+
+          Customer customer = widget.customerRepository.getCustomer();
+          customer.setPaymentMethod(paymentMethodId);
+
+          print(customer.toJson());
+
+          response = await Checkout().createCustomer(customer);
+          var customerId;
+          if (response.statusCode == 200) {
+            customerId = json.decode(response.body)['id'];
+          } else {
+            _alertUser("", "Unable to create order. Please check payment details.");
+          }
+
+          print("The customer id is: $customerId");
+
+
+          response = await Checkout().createSubscription(customerId, quantity);
+          var subscriptionId;
+          if (response.statusCode == 200) {
+            subscriptionId = json.decode(response.body)['id'];
+          } else {
+            _alertUser("", "Unable to create order. Please check payment details.");
+          }
+
+          print("The subscription id is: $subscriptionId");
+          _alertUser("", "Order successful. Please check your e-mail for order confirmation");
+
+
+
         },
       ),
     );
@@ -191,5 +236,32 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
 
   String getTotal() {
     return NumberFormat.simpleCurrency().format(quantity * unitPrice);
+  }
+
+  Future<void> _alertUser(String title, String alertText)async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(alertText),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

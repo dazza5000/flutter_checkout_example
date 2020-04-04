@@ -15,6 +15,7 @@ Customer _$CustomerFromJson(Map<String, dynamic> json) {
     json['address'] == null
         ? null
         : Address.fromJson(json['address'] as Map<String, dynamic>),
+    json['payment_method'] as String,
   );
 }
 
@@ -24,4 +25,5 @@ Map<String, dynamic> _$CustomerToJson(Customer instance) => <String, dynamic>{
       'name': instance.name,
       'phone': instance.phone,
       'address': instance.address?.toJson(),
+      'payment_method': instance.payment_method,
     };
