@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:checkoutexample/data/CardRepository.dart';
-import 'package:checkoutexample/data/CheckoutRepository.dart';
-import 'package:checkoutexample/data/CustomerRepository.dart';
-import 'package:checkoutexample/data/EmailProvider.dart';
-import 'package:checkoutexample/model/Customer.dart';
-import 'package:checkoutexample/model/Subscription.dart';
+import 'package:checkout/data/CardRepository.dart';
+import 'package:checkout/data/CheckoutRepository.dart';
+import 'package:checkout/data/CustomerRepository.dart';
+import 'package:checkout/data/EmailProvider.dart';
+import 'package:checkout/model/Customer.dart';
+import 'package:checkout/model/Subscription.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 

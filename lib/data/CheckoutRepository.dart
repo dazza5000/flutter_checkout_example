@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:checkoutexample/model/AttachPayment.dart';
-import 'package:checkoutexample/model/CreditCard.dart';
-import 'package:checkoutexample/model/Customer.dart';
-import 'package:checkoutexample/model/Subscription.dart';
+import 'package:checkout/model/AttachPayment.dart';
+import 'package:checkout/model/CreditCard.dart';
+import 'package:checkout/model/Customer.dart';
+import 'package:checkout/model/Subscription.dart';
 import 'package:http/http.dart' as http;
 
 import 'Network.dart';

@@ -1,10 +1,10 @@
-import 'package:checkoutexample/data/CardRepository.dart';
-import 'package:checkoutexample/data/CustomerRepository.dart';
-import 'package:checkoutexample/data/EmailProvider.dart';
-import 'package:checkoutexample/model/Address.dart';
-import 'package:checkoutexample/model/CreditCard.dart';
-import 'package:checkoutexample/model/Customer.dart';
-import 'package:checkoutexample/shopping_cart/shopping_cart_view.dart';
+import 'package:checkout/data/CardRepository.dart';
+import 'package:checkout/data/CustomerRepository.dart';
+import 'package:checkout/data/EmailProvider.dart';
+import 'package:checkout/model/Address.dart';
+import 'package:checkout/model/CreditCard.dart';
+import 'package:checkout/model/Customer.dart';
+import 'package:checkout/shopping_cart/shopping_cart_view.dart';
 import 'package:flutter/material.dart';
 
 final String firstName = "First name";
