@@ -1,9 +1,9 @@
-import '../model/Customer.dart';
+import '../model/SubscriptionRequest.dart';
 
 class CustomerRepository {
   static final CustomerRepository _singleton = CustomerRepository._internal();
 
-  Customer _customer;
+  SubscriptionRequest _customer;
 
   factory CustomerRepository() {
     return _singleton;
@@ -11,11 +11,11 @@ class CustomerRepository {
 
   CustomerRepository._internal();
 
-  void saveCustomer(Customer customer) {
+  void saveCustomer(SubscriptionRequest customer) {
     _customer = customer;
   }
 
-  Customer getCustomer() {
+  SubscriptionRequest getCustomer() {
     return _customer;
   }
 }

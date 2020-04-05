@@ -3,7 +3,7 @@ import 'package:checkout/data/CustomerRepository.dart';
 import 'package:checkout/data/EmailProvider.dart';
 import 'package:checkout/model/Address.dart';
 import 'package:checkout/model/CreditCard.dart';
-import 'package:checkout/model/Customer.dart';
+import 'package:checkout/model/SubscriptionRequest.dart';
 import 'package:checkout/shopping_cart/shopping_cart_view.dart';
 import 'package:flutter/material.dart';
 
@@ -317,14 +317,17 @@ class _CheckoutViewState extends State<CheckoutView> {
         addressLine2Controller.text,
         cityController.text,
         stateController.text);
-    Customer customer = Customer(
+    // Todo: back this out and go back to distinct Customer type and make it
+    // a property of Subscription Request
+    SubscriptionRequest subscriptionRequest = SubscriptionRequest(
         "",
         companyController.text,
         firstNameController.text + " " + lastNameController.text,
         "",
         address,
-        "");
-    customerRepository.saveCustomer(customer);
+        "",
+        0);
+    customerRepository.saveCustomer(subscriptionRequest);
 
     // validate credit card
     var yearString = expirationController.text.substring(3, 5);

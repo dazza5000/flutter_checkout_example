@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:checkout/model/AttachPayment.dart';
 import 'package:checkout/model/CreditCard.dart';
-import 'package:checkout/model/Customer.dart';
+import 'package:checkout/model/SubscriptionRequest.dart';
 import 'package:checkout/model/Subscription.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,7 +12,7 @@ class Checkout {
 
   static String baseUrl = "https://us-central1-liftai-f22ba.cloudfunctions.net";
 
-  Future<http.Response> createCustomer(Customer customer) async {
+  Future<http.Response> createCustomer(SubscriptionRequest customer) async {
     http.Client client = Network().getHttpClient();
     http.Response response = await client
         .post('$baseUrl/createCustomer', body: jsonEncode(customer));

@@ -4,7 +4,7 @@ import 'package:checkout/data/CardRepository.dart';
 import 'package:checkout/data/CheckoutRepository.dart';
 import 'package:checkout/data/CustomerRepository.dart';
 import 'package:checkout/data/EmailProvider.dart';
-import 'package:checkout/model/Customer.dart';
+import 'package:checkout/model/SubscriptionRequest.dart';
 import 'package:checkout/model/Subscription.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -227,26 +227,14 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
 
           print("Payment method id is: $paymentMethodId");
 
-          Customer customer = widget.customerRepository.getCustomer();
+          SubscriptionRequest customer = widget.customerRepository.getCustomer();
           customer.setEmail(widget.emailProvider.getEmail());
           customer.setPaymentMethod(paymentMethodId);
+          customer.setQuantity(quantity);
 
           print(customer.toJson());
 
           response = await Checkout().createCustomer(customer);
-          var customerId;
-          if (response.statusCode == 200) {
-            customerId = json.decode(response.body)['id'];
-          } else {
-            _alertUser(
-                "Unable to create order.", response.body);
-            _setProgress(false);
-            return;
-          }
-
-          print("The customer id is: $customerId");
-
-          response = await Checkout().createSubscription(customerId, quantity);
           var subscriptionId;
           if (response.statusCode == 200) {
             subscriptionId = json.decode(response.body)['id'];
