@@ -12,10 +12,10 @@ class Checkout {
 
   static String baseUrl = "https://us-central1-liftai-f22ba.cloudfunctions.net";
 
-  Future<http.Response> createCustomer(SubscriptionRequest customer) async {
+  Future<http.Response> createCustomer(SubscriptionRequest subscriptionRequest) async {
     http.Client client = Network().getHttpClient();
     http.Response response = await client
-        .post('$baseUrl/createCustomer', body: jsonEncode(customer));
+        .post('$baseUrl/createCustomerAndSubscription', body: jsonEncode(subscriptionRequest));
 
     return response;
   }
