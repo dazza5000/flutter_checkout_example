@@ -50,37 +50,7 @@ class _CheckoutViewState extends State<CheckoutView> {
   void initState() {
     super.initState();
     securityCodeController.addListener(() {
-      if (!_formKey.currentState.validate()) {
-        return;
-      }
-
-      Address address = Address(
-          addressLine1Controller.text,
-          addressLine2Controller.text,
-          cityController.text,
-          stateController.text);
-      Customer customer = Customer(
-          "",
-          companyController.text,
-          firstNameController.text + " " + lastNameController.text,
-          "",
-          address,
-          "");
-      customerRepository.saveCustomer(customer);
-
-      // validate credit card
-      var yearString = expirationController.text.substring(3, 5);
-
-      if (yearString.length < 2) {
-        return;
-      }
-
-      int expirationMonth = int.parse(expirationController.text.substring(0, 2));
-      int expirationYear = int.parse(yearString);
-
-      CreditCard card = CreditCard(cardNumberController.text.replaceAll(' ', ''), expirationMonth, expirationYear, securityCodeController.text);
-
-      cardRepository.saveCard(card);
+      _validateAndStore();
     });
   }
 
@@ -113,7 +83,7 @@ class _CheckoutViewState extends State<CheckoutView> {
                   ),
                 ),
               ),
-              ShoppingCartView(customerRepository, cardRepository, emailProvider)
+              ShoppingCartView(customerRepository, cardRepository, emailProvider, () => _validateAndStore())
             ],
           ),
         ));
@@ -336,6 +306,41 @@ class _CheckoutViewState extends State<CheckoutView> {
           )
         ]);
   }
+
+  void _validateAndStore() {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+
+    Address address = Address(
+        addressLine1Controller.text,
+        addressLine2Controller.text,
+        cityController.text,
+        stateController.text);
+    Customer customer = Customer(
+        "",
+        companyController.text,
+        firstNameController.text + " " + lastNameController.text,
+        "",
+        address,
+        "");
+    customerRepository.saveCustomer(customer);
+
+    // validate credit card
+    var yearString = expirationController.text.substring(3, 5);
+
+    if (yearString.length < 2) {
+      return;
+    }
+
+    int expirationMonth = int.parse(expirationController.text.substring(0, 2));
+    int expirationYear = int.parse(yearString);
+
+    CreditCard card = CreditCard(cardNumberController.text.replaceAll(' ', ''), expirationMonth, expirationYear, securityCodeController.text);
+
+    cardRepository.saveCard(card);
+  }
+
 }
 
 class MaskedTextController extends TextEditingController {

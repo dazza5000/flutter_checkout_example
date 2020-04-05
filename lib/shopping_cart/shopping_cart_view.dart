@@ -15,9 +15,10 @@ class ShoppingCartView extends StatefulWidget {
   final CustomerRepository customerRepository;
   final CardRepository cardRepository;
   final EmailProvider emailProvider;
+  final Function checkModel;
 
   ShoppingCartView(
-      this.customerRepository, this.cardRepository, this.emailProvider);
+      this.customerRepository, this.cardRepository, this.emailProvider, this.checkModel);
 
   @override
   _ShoppingCartViewState createState() => _ShoppingCartViewState();
@@ -196,6 +197,10 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
             return;
           }
 
+          if (widget.checkModel != null) {
+            widget.checkModel.call();
+          }
+
           if (CustomerRepository().getCustomer() == null ||
               CardRepository().getCard() == null) {
             _alertUser("", "Invalid payment details.");
@@ -234,7 +239,7 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
             customerId = json.decode(response.body)['id'];
           } else {
             _alertUser(
-                "", "Unable to create order. Please check payment details.");
+                "Unable to create order.", response.body);
             _setProgress(false);
             return;
           }
@@ -247,7 +252,7 @@ class _ShoppingCartViewState extends State<ShoppingCartView> {
             subscriptionId = json.decode(response.body)['id'];
           } else {
             _alertUser(
-                "", "Unable to create order. Please check payment details.");
+                "Unable to create order.", response.body);
             _setProgress(false);
             return;
           }

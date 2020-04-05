@@ -38,6 +38,6 @@ class MockEmailProvider extends EmailProvider {
 
   @override
   String getEmail() {
-    return "darran7777777@gmail.com";
+    return "test@test.com";
   }
 }
